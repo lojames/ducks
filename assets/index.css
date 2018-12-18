@@ -1,0 +1,70 @@
+#background-layer {
+  z-index: 0;
+  background-image: url("../assets/background_layer.png");
+  background-size: 100% 100%;
+}
+
+#interactive-grass-layer {
+  z-index: 1;
+}
+
+#interactive-duck-layer {
+  z-index: 3;
+}
+
+#interactive-water-layer {
+  z-index: 5;
+}
+
+#grass-layer {
+  z-index: 2;
+  background-image: url("../assets/grass_layer.png");
+}
+
+#duck-layer{
+  z-index: 4;
+  background-image: url("../assets/duck_layer.png");
+}
+
+#water-layer{
+  z-index: 6;
+  background-image: url("../assets/water_layer.png");
+}
+
+#foreground-layer {
+  z-index: 8;
+  background-image: url("../assets/foreground_layer.png");
+}
+
+#overlay-layer {
+  z-index: 10;
+  pointer-events: none;
+}
+
+.game-layer-display {
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+.game-layer {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+}
+
+.game-container {
+  position: relative;
+  display: block;
+  margin: 200px auto;
+  width: 1920px;
+  height: 1080px;
+  border: 30px solid #ccb089;
+	border-image-source: url('../assets/frame.png');
+	border-image-slice: 23 23;
+}
+
+html {
+  background-image: url("../assets/test.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
