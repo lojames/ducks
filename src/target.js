@@ -14,7 +14,7 @@ class Target{
     this.currentTime = 0;
     this.despawn = false;
     this.direction = options.direction;
-    this.speed = Math.random()*6+1
+    this.speed = Math.random()*4+2;
   }
 
   set state(index){
@@ -50,7 +50,7 @@ class Target{
   update(dt){
     this.stateTime += dt;
     const state = this.state;
-    if (state == null){
+    if (state == null || this.x < 0 || this.x > 1280){
       this.despawn = true;
       return;
     }
@@ -67,7 +67,8 @@ class Target{
         this.x += (this.direction*this.speed);
         break;
       case "despawn":
-        this.y += 1.0;
+        this.y += 4.0;
+        this.opacity = .85
     }
   }
 

@@ -12,14 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay: document.getElementById("overlay-layer"),
   }
 
-  layers.interactiveLayer0.width = 1920;
-  layers.interactiveLayer0.height = 1080;
-  layers.interactiveLayer1.width = 1920;
-  layers.interactiveLayer1.height = 1080;
-  layers.interactiveLayer2.width = 1920;
-  layers.interactiveLayer2.height = 1080;
-  layers.overlay.width = 1920;
-  layers.overlay.height = 1080;
+  layers.interactiveLayer0.width = 1280;
+  layers.interactiveLayer0.height = 720;
+  layers.interactiveLayer1.width = 1280;
+  layers.interactiveLayer1.height = 720;
+  layers.interactiveLayer2.width = 1280;
+  layers.interactiveLayer2.height = 720;
+  layers.overlay.width = 1280;
+  layers.overlay.height = 720;
 
   const game = new Game(layers);
 });

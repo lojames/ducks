@@ -48,16 +48,16 @@
 
 .game-layer {
   position: absolute;
-  width: 1920px;
-  height: 1080px;
+  width: 1280px;
+  height: 720px;
 }
 
 .game-container {
   position: relative;
   display: block;
   margin: 200px auto;
-  width: 1920px;
-  height: 1080px;
+  width: 1280px;
+  height: 720px;
   border: 30px solid #ccb089;
 	border-image-source: url('../assets/frame.png');
 	border-image-slice: 23 23;

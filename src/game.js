@@ -50,12 +50,17 @@ class Game{
 
   }
 
+  gameover(){
+    clearInterval(this.timer);
+  }
+
   action(event){
     const mousePos = this.getMousePos(event);
 
     for (let i = 0; i < this.targets.length; i++) {
-      if (this.targets[i].hitTest(mousePos)){
-        this.targets[i].despawn = true;
+      if (this.targets[i].hitTest(mousePos) && this.targets[i].state.mode==="active"){
+        this.targets[i].state = 2;
+        console.log(this.targets[i].state);
         this.score++;
         this.timer++;
       }
@@ -76,10 +81,6 @@ class Game{
     return loc;
   }
 
-  gameover(){
-    clearInterval(this.timer);
-  }
-
   spawn(){
     let spawnPosX, direction;
     if (Math.random() < .5){
@@ -92,18 +93,19 @@ class Game{
 
     const rng = Math.random();
     let selectedLayer, selectedScale, spawnPosY;
+    console.log("target spawn");
     if (rng < .33){
       selectedLayer = this.ctx0;
-      spawnPosY = 520;
-      selectedScale = 0.6;
+      spawnPosY = 340;
+      selectedScale = 0.55;
     } else if (rng < .66){
       selectedLayer = this.ctx1;
-      spawnPosY = 600;
-      selectedScale = 0.85;
+      spawnPosY = 400;
+      selectedScale = 0.7;
     } else {
       selectedLayer = this.ctx2;
-      spawnPosY = 700;
-      selectedScale = 1;
+      spawnPosY = 450;
+      selectedScale = .85;
     }
     const target = new Target({
       ctx: selectedLayer,
@@ -116,7 +118,7 @@ class Game{
       states: [
         {mode: "spawn", duration: 0},
         {mode: "active", duration: 99},
-        {mode: "despawn", duration: 5}
+        {mode: "despawn", duration: 1}
       ],
       scale: selectedScale,
     });
