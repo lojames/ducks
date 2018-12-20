@@ -62,8 +62,6 @@ class Target{
 
     switch(state.mode){
       case "spawn":
-        break;
-      case "active":
         this.x += (this.direction*this.speed);
         break;
       case "despawn":
