@@ -1,6 +1,6 @@
 const Target = require("./target");
 
-const gameLength = 15;
+const gameLength = 7;
 
 class Game{
   constructor(layers){
@@ -12,10 +12,9 @@ class Game{
     this.ctx2 = layers.interactiveLayer2.getContext("2d");
     this.overlayCanvas = layers.overlay;
     this.ctxOverlay = this.overlayCanvas.getContext("2d");
-    this.ctxOverlay.lineWidth = 10;
 
     this.targetImage = new Image();
-    this.targetImage.src = "../assets/target.png";
+    this.targetImage.src = "./assets/target.png";
     this.targets = [];
 
 
@@ -24,7 +23,7 @@ class Game{
   }
 
   init(){
-    this.canvas0.style.cursor = "url(../assets/crosshair2.png) 23 23, auto";
+    this.canvas0.style.cursor = "url(./assets/crosshair2.png) 23 23, auto";
     console.log(gameLength);
     this.score = 0;
     this.timer = gameLength*10;
@@ -49,30 +48,54 @@ class Game{
     // }
   }
 
-  startScreen(){
-    this.ctxOverlay.clearRect(0,0,this.canvas0.width,this.canvas0.height);
-    this.ctxOverlay.strokeStyle = 'white';
-    this.ctxOverlay.fillStyle = 'orange';
-    this.ctxOverlay.font = "100px 'Luckiest Guy'";
-    this.ctxOverlay.textAlign = "center";
-    this.ctxOverlay.strokeText("Don't Shoot the Ducks!", this.canvas0.width/2, this.canvas0.height/4);
-    this.ctxOverlay.fillText("Don't Shoot the Ducks!", this.canvas0.width/2, this.canvas0.height/4);
+  setOverlayText(options){
+    if (!options.size) options.size = "100px";
+    if (!options.font) options.font = "Luckiest Guy";
+    this.ctxOverlay.lineWidth = options.width || 10;
+    this.ctxOverlay.strokeStyle = options.stroke || "black";
+    this.ctxOverlay.fillStyle = options.color || "white";
+    this.ctxOverlay.font = `${options.size} ${options.font}`;
+    this.ctxOverlay.textAlign = options.align || "center";
+    this.ctxOverlay.strokeText(options.text, options.x, options.y);
+    this.ctxOverlay.fillText(options.text, options.x, options.y);
+  }
 
-    this.ctxOverlay.strokeStyle = 'black';
-    this.ctxOverlay.fillStyle = 'white';
-    this.ctxOverlay.font = "40px 'Luckiest Guy'";
-    this.ctxOverlay.textAlign = "left";
-    this.ctxOverlay.strokeText("Click to shoot as many targets as you can", this.canvas0.width/6, this.canvas0.height/3+60);
-    this.ctxOverlay.fillText("Click to shoot as many targets as you can", this.canvas0.width/6, this.canvas0.height/3+60);
+  clearOverlayText(){
+    this.ctxOverlay.clearRect(0,0,this.canvas0.width,this.canvas0.height);
+  }
+
+  startScreen(){
+    this.clearOverlayText();
+
+    this.setOverlayText({
+      size: "150px",
+      stroke: "white",
+      color: "orange",
+      text: "Don't Miss!",
+      x: this.canvas0.width/2,
+      y: this.canvas0.height/4
+    });
+
+    this.setOverlayText({
+      align: "left",
+      size: "40px",
+      text: "Click to shoot as many targets as you can",
+      x: this.canvas0.width/6,
+      y: this.canvas0.height/3+60
+    });
 
     this.ctxOverlay.strokeText("before time runs out.", this.canvas0.width/6, this.canvas0.height/3+120);
     this.ctxOverlay.fillText("before time runs out.", this.canvas0.width/6, this.canvas0.height/3+120);
 
-    this.ctxOverlay.strokeStyle = 'white';
-    this.ctxOverlay.fillStyle = 'green';
-    this.ctxOverlay.font = "100px 'Luckiest Guy'";
-    this.ctxOverlay.strokeText("Click to Start", this.canvas0.width/3, this.canvas0.height/5*4);
-    this.ctxOverlay.fillText("Click to Start", this.canvas0.width/3, this.canvas0.height/5*4);
+    this.setOverlayText({
+      align: "left",
+      stroke: "white",
+      color: "green",
+      text: "Click to Start",
+      x: this.canvas0.width/3,
+      y: this.canvas0.height/5*4
+    });
+
     this.canvas0.addEventListener('click', prepInit);
     const game = this;
     function prepInit(){
@@ -84,29 +107,38 @@ class Game{
 
   gameOver(){
     clearInterval(this.interval);
-    this.ctxOverlay.clearRect(0,0,this.canvas0.width,this.canvas0.height)
-    this.ctxOverlay.strokeStyle = 'white';
-    this.ctxOverlay.fillStyle = 'red';
-    this.ctxOverlay.font = "100px 'Luckiest Guy'";
-    this.ctxOverlay.textAlign = "center";
-    this.ctxOverlay.strokeText("Time's Up!", this.canvas0.width/2, this.canvas0.height/3);
-    this.ctxOverlay.fillText("Time's Up!", this.canvas0.width/2, this.canvas0.height/3);
+    this.clearOverlayText();
+    this.setOverlayText({
+      stroke: "white",
+      color: "red",
+      text: "Time's Up!",
+      x: this.canvas0.width/2,
+      y: this.canvas0.height/3
+    });
 
-    this.ctxOverlay.strokeStyle = 'black';
-    this.ctxOverlay.fillStyle = 'white';
-    this.ctxOverlay.font = "60px 'Luckiest Guy'";
-    this.ctxOverlay.strokeText(`Your Score: ${this.score}`, this.canvas0.width/2, this.canvas0.height/8*4);
-    this.ctxOverlay.fillText(`Your Score: ${this.score}`, this.canvas0.width/2, this.canvas0.height/8*4);
-    this.ctxOverlay.strokeText(`Time Lasted: ${this.timeLasted/10}`, this.canvas0.width/2, this.canvas0.height/8*5);
-    this.ctxOverlay.fillText(`Time Lasted: ${this.timeLasted/10}`, this.canvas0.width/2, this.canvas0.height/8*5);
+    this.setOverlayText({
+      size: "60px",
+      text: `Your Score: ${this.score}`,
+      x: this.canvas0.width/2,
+      y: this.canvas0.height/2
+    });
 
-    this.ctxOverlay.strokeStyle = 'white';
-    this.ctxOverlay.fillStyle = 'green';
-    this.ctxOverlay.font = "60px 'Luckiest Guy'";
-    this.ctxOverlay.textAlign = "center";
+    this.setOverlayText({
+      size: "60px",
+      text: `Time Lasted: ${this.timeLasted/10}`,
+      x: this.canvas0.width/2,
+      y: this.canvas0.height/8*5
+    });
+
     setTimeout( () => {
-      this.ctxOverlay.strokeText("Click to Try Again", this.canvas0.width/2, this.canvas0.height/4*3);
-      this.ctxOverlay.fillText("Click to Try Again", this.canvas0.width/2, this.canvas0.height/4*3);
+      this.setOverlayText({
+        size: "60px",
+        stroke: "white",
+        color: "green",
+        text: `Click to Try Again`,
+        x: this.canvas0.width/2,
+        y: this.canvas0.height/4*3
+      });
       this.canvas0.addEventListener('click', prepInit);
       const game = this;
       function prepInit(){
@@ -235,35 +267,37 @@ class Game{
   }
 
   render(){
-    this.ctx0.clearRect(0, 0, this.canvas0.width, this.canvas0.width)
-    this.ctx1.clearRect(0, 0, this.canvas0.width, this.canvas0.width)
-    this.ctx2.clearRect(0, 0, this.canvas0.width, this.canvas0.width)
-    this.ctxOverlay.clearRect(0,0,this.canvas0.width,this.canvas0.height)
+    this.ctx0.clearRect(0, 0, this.canvas0.width, this.canvas0.width);
+    this.ctx1.clearRect(0, 0, this.canvas0.width, this.canvas0.width);
+    this.ctx2.clearRect(0, 0, this.canvas0.width, this.canvas0.width);
+    this.clearOverlayText();
 
     for (let i = 0; i < this.targets.length; i++) {
       this.targets[i].render();
     }
 
-    this.ctxOverlay.textAlign = "left";
-    this.ctxOverlay.strokeStyle = 'black';
-    this.ctxOverlay.fillStyle = 'white';
-    this.ctxOverlay.font = "60px 'Luckiest Guy'";
-    this.ctxOverlay.strokeText("score:  " + this.score, 40, 80);
-    this.ctxOverlay.fillText("score:  " + this.score, 40, 80);
+    this.setOverlayText({
+      align: "left",
+      size: "60px",
+      text: `score:  ${this.score}`,
+      x: 40,
+      y: 80
+    });
 
-    this.ctxOverlay.textAlign = "center";
     if (this.timer > 50){
-      this.ctxOverlay.strokeStyle = 'black';
-      this.ctxOverlay.fillStyle = 'white';
-      this.ctxOverlay.font = "80px 'Luckiest Guy'";
-      this.ctxOverlay.strokeText(`Time Left: ${parseInt(this.timer/10)}`, this.canvas0.width/2, this.canvas0.height/5);
-      this.ctxOverlay.fillText(`Time Left: ${parseInt(this.timer/10)}`, this.canvas0.width/2, this.canvas0.height/5);
+      this.setOverlayText({
+        text: `Time Left: ${parseInt(this.timer/10)}`,
+        x: this.canvas0.width/2,
+        y: this.canvas0.height/5
+      });
     } else {
-      this.ctxOverlay.strokeStyle = 'red';
-      this.ctxOverlay.fillStyle = 'white';
-      this.ctxOverlay.font = "150px 'Luckiest Guy'";
-      this.ctxOverlay.strokeText(this.timer/10, this.canvas0.width/2, this.canvas0.height/4);
-      this.ctxOverlay.fillText(this.timer/10, this.canvas0.width/2, this.canvas0.height/4);
+      this.setOverlayText({
+        size: "150px",
+        stroke: "red",
+        text: this.timer/10,
+        x: this.canvas0.width/2,
+        y: this.canvas0.height/5
+      });
     }
   }
 }
