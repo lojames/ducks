@@ -33,8 +33,6 @@ class Target{
   hitTest(pos){
     const center = { x: this.x, y: this.y };
     const radius = (this.width * this.scale) / 2.0;
-    console.log(`Center: ${center.x}, ${center.y}`);
-    console.log(`Radius: ${radius}`);
     const dist = distanceBetweenPoints(pos, center);
 
     return (dist < radius)

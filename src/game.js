@@ -1,6 +1,6 @@
 const Target = require("./target");
 
-const gameLength = 7;
+const gameLength = 10;
 
 class Game{
   constructor(layers){
@@ -24,10 +24,8 @@ class Game{
 
   init(){
     this.canvas0.style.cursor = "url(./assets/crosshair2.png) 23 23, auto";
-    console.log(gameLength);
     this.score = 0;
     this.timer = gameLength*10;
-    console.log(this.timer);
     this.timeLasted = this.timer;
     this.interval = setInterval(()=>this.timer-=1, 100);
     this.startTime = Date.now();
@@ -40,12 +38,11 @@ class Game{
       game.action(event);
     }
 
-    this.canvas0.addEventListener('click', action);
-    // if ('ontouchstart' in window){
-    //   this.canvas0.addEventListener('touchstart', action);
-    // } else {
-    //   this.canvas0.addEventListener('mousedown', action);
-    // }
+    if ('ontouchstart' in window){
+      this.canvas0.addEventListener('touchstart', action);
+    } else {
+      this.canvas0.addEventListener('mousedown', action);
+    }
   }
 
   setOverlayText(options){
@@ -107,6 +104,11 @@ class Game{
 
   gameOver(){
     clearInterval(this.interval);
+
+    for (let i = 0; i < this.targets.length; i++){
+      this.targets[i].state = 1;
+    }
+
     this.clearOverlayText();
     this.setOverlayText({
       stroke: "white",
@@ -135,7 +137,7 @@ class Game{
         size: "60px",
         stroke: "white",
         color: "green",
-        text: `Click to Try Again`,
+        text: `Click to Play Again`,
         x: this.canvas0.width/2,
         y: this.canvas0.height/4*3
       });
@@ -154,7 +156,6 @@ class Game{
     for (let i = 0; i < this.targets.length; i++) {
       if (this.targets[i].hitTest(mousePos) && this.targets[i].state.mode==="spawn"){
         this.targets[i].state=1;
-        console.log(this.targets[i].state);
         this.score++;
         this.timer+=5;
         this.timeLasted+=5;
@@ -172,7 +173,6 @@ class Game{
 
     loc.x = (clientX - rect.left) * canvasScale;
     loc.y = (clientY - rect.top) * canvasScale;
-    console.log(`MousePos=${loc.x}, ${loc.y}`);
     return loc;
   }
 
@@ -188,7 +188,6 @@ class Game{
 
     const rng = Math.random();
     let selectedLayer, selectedScale, spawnPosY;
-    console.log("target spawn");
     if (rng < .33){
       selectedLayer = this.ctx0;
       spawnPosY = 340;

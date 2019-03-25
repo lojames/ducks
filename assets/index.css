@@ -55,12 +55,44 @@
 .game-container {
   position: relative;
   display: block;
-  margin: 200px auto;
+  margin: 15px auto;
   width: 1280px;
   height: 720px;
   border: 30px solid #ccb089;
 	border-image-source: url('../assets/frame.png');
 	border-image-slice: 23 23;
+}
+
+.about-wrapper{
+  margin: 0 auto;
+  border: 30px solid #ccb089;
+	border-image-source: url('../assets/frame.png');
+	border-image-slice: 23 23;
+  max-width: 550px;
+}
+
+.about{
+  background-color: white;
+  font-family: 'Luckiest Guy';
+  font-size: 45px;
+  padding: 20px;
+  text-align: center;
+}
+
+.about-text, .link {
+  margin: 0 auto;
+  padding: 5px;
+}
+
+a {
+  color: black;
+  padding: 0 5px;
+  text-decoration: none;
+}
+
+a:hover, .about-text:hover {
+  color: red;
+  text-decoration: underline;
 }
 
 html {

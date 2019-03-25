@@ -21,5 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
   layers.overlay.width = 1280;
   layers.overlay.height = 720;
 
+  layers.grassLayer.width = 1280;
+  layers.grassLayer.height = 720;
+  layers.duckLayer.width = 1280;
+  layers.duckLayer.height = 720;
+  layers.waterLayer.width = 1280;
+  layers.waterLayer.height = 720;
+  layers.foregroundLayer.width = 1280;
+  layers.foregroundLayer.height = 720;
+
   const game = new Game(layers);
 });
