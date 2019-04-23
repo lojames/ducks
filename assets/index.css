@@ -1,7 +1,5 @@
 #background-layer {
   z-index: 0;
-  background-image: url("../assets/background_layer.png");
-  background-size: 100% 100%;
 }
 
 #interactive-grass-layer {
@@ -18,26 +16,26 @@
 
 #grass-layer {
   z-index: 2;
-  background-image: url("../assets/grass_layer.png");
 }
 
 #duck-layer{
   z-index: 4;
-  background-image: url("../assets/duck_layer.png");
 }
 
 #water-layer{
   z-index: 6;
-  background-image: url("../assets/water_layer.png");
 }
 
 #foreground-layer {
+  z-index: 7;
+}
+
+#float-text-layer {
   z-index: 8;
-  background-image: url("../assets/foreground_layer.png");
 }
 
 #overlay-layer {
-  z-index: 10;
+  z-index: 9;
   pointer-events: none;
 }
 

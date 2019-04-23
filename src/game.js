@@ -10,21 +10,80 @@ class Game{
     this.ctx1 = layers.interactiveLayer1.getContext("2d");
     this.canvas2 = layers.interactiveLayer2;
     this.ctx2 = layers.interactiveLayer2.getContext("2d");
+    this.floatTextCanvas = layers.floatTextLayer;
+    this.ctxFloatText = layers.floatTextLayer.getContext("2d");
     this.overlayCanvas = layers.overlay;
     this.ctxOverlay = this.overlayCanvas.getContext("2d");
+
+    this.foregroundLayer = layers.foregroundLayer;
+    this.foreground = layers.foregroundLayer.getContext("2d");
+    let foreground = new Image();
+    foreground.src = "./assets/foreground_layer.png";
+
+    this.backgroundLayer = layers.backgroundLayer;
+    this.background = layers.backgroundLayer.getContext("2d");
+    let background = new Image();
+    background.src = "./assets/background_layer.png";
+
+    this.grassLayer = layers.grassLayer;
+    this.grass = layers.grassLayer.getContext("2d");
+    let grass = new Image();
+    grass.src = "./assets/grass_layer.png";
+
+    this.duckLayer = layers.duckLayer;
+    this.duck = layers.duckLayer.getContext("2d");
+    let duck = new Image();
+    duck.src = "./assets/duck_layer.png";
+
+    this.waterLayer = layers.waterLayer;
+    this.water = layers.waterLayer.getContext("2d");
+    let water = new Image();
+    water.src = "./assets/water_layer.png";
 
     this.targetImage = new Image();
     this.targetImage.src = "./assets/target.png";
     this.targets = [];
-
+    this.floatText = [];
 
     const game = this;
-    document.fonts.ready.then(() => {this.startScreen()});
+    let numImagesLoaded = 0;
+    const initialize = () => {
+      numImagesLoaded++;
+      if(numImagesLoaded == 5) {
+        this.duck.drawImage(duck, 0, 0, this.duckLayer.width, this.duckLayer.height);
+        this.water.drawImage(water, 0, 0, this.waterLayer.width, this.waterLayer.height);
+        this.grass.drawImage(grass, 0, 0, this.grassLayer.width, this.grassLayer.height);
+        this.background.drawImage(background, 0, 0, this.backgroundLayer.width, this.backgroundLayer.height);
+        this.foreground.drawImage(foreground, 0, 0, this.foregroundLayer.width, this.foregroundLayer.height);
+
+        const game = this;
+        function action(event){
+          game.action(event);
+        }
+
+        if ('ontouchstart' in window){
+          this.canvas0.addEventListener('touchstart', action);
+        } else {
+          this.canvas0.addEventListener('mousedown', action);
+        }
+
+        document.fonts.ready.then(() => {
+          this.setFloatText();
+          this.startScreen()
+        });
+      }
+    }
+    water.onload = initialize
+    foreground.onload = initialize;
+    background.onload = initialize;
+    grass.onload = initialize;
+    duck.onload = initialize;
   }
 
   init(){
     this.canvas0.style.cursor = "url(./assets/crosshair2.png) 23 23, auto";
     this.score = 0;
+    this.hitMultiplier = 1;
     this.timer = gameLength*10;
     this.timeLasted = this.timer;
     this.interval = setInterval(()=>this.timer-=1, 100);
@@ -32,17 +91,14 @@ class Game{
     this.lastRefreshTime = Date.now();
     this.spawn();
     this.refresh();
+  }
 
-    const game = this;
-    function action(event){
-      game.action(event);
-    }
-
-    if ('ontouchstart' in window){
-      this.canvas0.addEventListener('touchstart', action);
-    } else {
-      this.canvas0.addEventListener('mousedown', action);
-    }
+  setFloatText(){
+    this.ctxFloatText.lineWidth = 7;
+    this.ctxFloatText.strokeStyle = "black";
+    this.ctxFloatText.fillStyle = "white";
+    this.ctxFloatText.font = "25px Luckiest Guy";
+    this.ctxFloatText.textAlign = "center";
   }
 
   setOverlayText(options){
@@ -152,14 +208,36 @@ class Game{
 
   action(event){
     const mousePos = this.getMousePos(event);
-
+    let hitSuccess = false;
     for (let i = 0; i < this.targets.length; i++) {
       if (this.targets[i].hitTest(mousePos) && this.targets[i].state.mode==="spawn"){
+        hitSuccess = true;
         this.targets[i].state=1;
-        this.score++;
-        this.timer+=5;
-        this.timeLasted+=5;
+
+        if (this.hitMultiplier < 5) {
+          this.hitMultiplier++;
+        }
+
+        let pointValue;
+        if (this.targets[i].y == 450) {
+          pointValue = 1;
+        } else if (this.targets[i].y == 400) {
+          pointValue = 2;
+        } else {
+          pointValue = 3;
+        }
+
+        pointValue*=this.hitMultiplier;
+        this.score+= pointValue;
+        this.timer+= pointValue;
+        this.timeLasted+= pointValue;
       }
+    }
+    
+    if (!hitSuccess) {
+      this.hitMultiplier = 1;
+      this.timer -= 10;
+      this.timeLasted -= 10;
     }
   }
 
@@ -201,6 +279,15 @@ class Game{
       spawnPosY = 450;
       selectedScale = .85;
     }
+
+    let otherLayers = [this.foreground, this.water];
+    if (spawnPosY == 400) {
+      otherLayers.push(this.duck);
+    } else if (spawnPosY == 340) {
+      otherLayers.push(this.duck);
+      otherLayers.push(this.grass);
+    }
+
     const target = new Target({
       ctx: selectedLayer,
       x: spawnPosX,
@@ -214,6 +301,7 @@ class Game{
         {mode: "despawn", duration: 1}
       ],
       scale: selectedScale,
+      otherLayers: otherLayers,
     });
 
     this.targets.push(target);
@@ -252,6 +340,11 @@ class Game{
       removed = false;
       for (let i = 0; i < this.targets.length; i++) {
         if (this.targets[i].despawn){
+          if (this.targets[i].x < 0 || this.targets[i].x > 1280){
+            this.hitMultiplier = 1;
+            this.timer -= 10;
+            this.timeLasted -= 10;
+          }
           this.targets.splice(i,1);
           removed = true;
           break;

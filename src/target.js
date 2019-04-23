@@ -11,10 +11,10 @@ class Target{
     this.state = 0;
     this.scale = (options.scale == null) ? 1.0 : options.scale;
     this.opacity = (options.opacity == null ) ? 1.0 : options.opacity;
-    this.currentTime = 0;
     this.despawn = false;
     this.direction = options.direction;
     this.speed = Math.random()*4+2;
+    this.otherLayers = options.otherLayers;
   }
 
   set state(index){
@@ -35,11 +35,18 @@ class Target{
     const radius = (this.width * this.scale) / 2.0;
     const dist = distanceBetweenPoints(pos, center);
 
-    return (dist < radius)
+    if (dist < radius) {
+      for (const layer of this.otherLayers){
+        if (layer.getImageData(pos.x,pos.y,1,1).data[3] > 0){
+          return false;
+        }
+      }
+      return true;
+    }
 
     function distanceBetweenPoints(a,b){
-      var x = a.x - b.x;
-      var y = a.y - b.y;
+      const x = a.x - b.x;
+      const y = a.y - b.y;
 
       return Math.sqrt(x*x + y*y);
     }
